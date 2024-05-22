@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}
+  <title>Home</title>
+{% endblock %}
+
+{% block content %}
+  <h1 class="d-flex justify-content-between">
+    <span>TODO list</span>
+    <a href="{% url 'todo-app:task-create' %}" class="btn btn-primary link-to-page align-self-center">
+      Add task
+    </a>
+  </h1>
+  
+  <br>
+  
+  {% if task_list %}
+    {% for task in task_list %}
+      <div class="d-flex justify-content-between">
+
+      <div>
+        <strong>
+          {{ task.content }}
+          {% if task.done %}
+            <span style="color: green">Done</span>
+          {% else %}
+            <span style="color: red">Not done</span>
+          {% endif %}
+        </strong>
+        <div>Created: {{ task.datetime }}</div>
+        <div>
+          Tags: 
+          {% for tag in task.tags.all %}
+            {{ tag.name }}
+          {% endfor %}  
+          <a class="link-offset-2 link-underline link-underline-opacity-0" href="{% url 'todo-app:task-update' task.pk %}">Update</a>
+          <a class="link-offset-2 link-underline link-underline-opacity-0" href="{% url 'todo-app:task-delete' task.pk %}">Delete</a>
+        </div>
+      </div>
+        {% if task.done %}
+          <a href="{% url 'todo-app:toggle-do' task.pk %}" class="btn btn-secondary link-to-page align-self-center">
+            Undo
+          </a>
+        {% else %}
+          <a href="{% url 'todo-app:toggle-do' task.pk %}" class="btn btn-success link-to-page align-self-center">
+            Complete
+          </a>
+        {% endif %}
+      </div>
+      <hr>
+    {% endfor %}
+  {% else %}
+    <p>No tasks found :(</p>
+  {% endif %}
+{% endblock %}
